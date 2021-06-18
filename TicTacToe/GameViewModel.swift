@@ -15,6 +15,9 @@ final class GameViewModel: ObservableObject {
     @Published var moves: [Move?] = Array(repeating: nil, count: 9)
     @Published var isGameboardDisabled = false
     @Published var alertItem: AlertItem?
+    @Published var playerScore: Int = 0
+    @Published var computerScore: Int = 0
+    @Published var difficulty : String = "Easy"
     
     func processPlayerMove(for position: Int) {
         if isSquareOccupied(in: moves, forIndex: position) { return }
@@ -54,10 +57,10 @@ final class GameViewModel: ObservableObject {
         return moves.contains(where: {$0?.boardIndex == index})
     }
     
-    // MARK: TODO: Add a difficulty choice for the player for the AI (easy, normal, hard). Let two human players play the game.
+    // MARK: TODO: Let two human players play the game.
     
     // Easy mode: AI just chooses random squares until it wins
-    // Normal: AI tries to block you from winning and choosing random squares
+    // Normal: AI goes for winning moves and choosing random squares
     // Hard: AI goes for winning moves, blocking the player, taking the middle square, then choosing random squares
     
     // If AI can win, then win
@@ -71,35 +74,41 @@ final class GameViewModel: ObservableObject {
         let compMoves = moves.compactMap{$0}.filter{$0.player == .computer }
         let compPos = Set(compMoves.map{$0.boardIndex})
         
-        for pattern in winPatterns {
-            let winPositions = pattern.subtracting(compPos)
-            
-            if winPositions.count == 1 {
-                let isAvailable = !isSquareOccupied(in: moves, forIndex: winPositions.first!)
-                if isAvailable { return winPositions.first! }
+        // AI goes for winning moves on Normal and Hard mode
+        if (difficulty == "Normal" || difficulty == "Hard") {
+            for pattern in winPatterns {
+                let winPositions = pattern.subtracting(compPos)
+                
+                if winPositions.count == 1 {
+                    let isAvailable = !isSquareOccupied(in: moves, forIndex: winPositions.first!)
+                    if isAvailable { return winPositions.first! }
+                }
             }
         }
         
-        // If AI can't win, then block
-        let humanMoves = moves.compactMap{$0}.filter{$0.player == .human }
-        let humanPos = Set(humanMoves.map{$0.boardIndex})
-        
-        for pattern in winPatterns {
-            let winPositions = pattern.subtracting(humanPos)
+        // AI tries to block the player and goes for the middle square on Hard mode
+        if (difficulty == "Hard") {
+            // If AI can't win, then block
+            let humanMoves = moves.compactMap{$0}.filter{$0.player == .human }
+            let humanPos = Set(humanMoves.map{$0.boardIndex})
             
-            if winPositions.count == 1 {
-                let isAvailable = !isSquareOccupied(in: moves, forIndex: winPositions.first!)
-                if isAvailable { return winPositions.first! }
+            for pattern in winPatterns {
+                let winPositions = pattern.subtracting(humanPos)
+                
+                if winPositions.count == 1 {
+                    let isAvailable = !isSquareOccupied(in: moves, forIndex: winPositions.first!)
+                    if isAvailable { return winPositions.first! }
+                }
+            }
+        
+            // If AI can't block, then take middle square
+            let centerSquare = 4
+            if !isSquareOccupied(in: moves, forIndex: centerSquare) {
+                return centerSquare
             }
         }
         
-        // If AI can't block, then take middle square
-        let centerSquare = 4
-        if !isSquareOccupied(in: moves, forIndex: centerSquare) {
-            return centerSquare
-        }
-        
-        // If AI can't take middle square, then take random available square
+        // AI does this on every difficulty. If AI can't take middle square, then take random available square
         var movePos = Int.random(in: 0..<9)
         while isSquareOccupied(in: moves, forIndex: movePos) {
             movePos = Int.random(in: 0..<9)
@@ -113,7 +122,16 @@ final class GameViewModel: ObservableObject {
         let playerMoves = moves.compactMap{ $0 }.filter{$0.player == player}
         let playerPos = Set(playerMoves.map{$0.boardIndex})
         
-        for pattern in winPatterns where pattern.isSubset(of: playerPos) { return true }
+        for pattern in winPatterns where pattern.isSubset(of: playerPos) {
+            if (player == .human) {
+                playerScore += 1
+            } else if (player == .computer) {
+                computerScore += 1
+            }
+
+            return true
+            
+        }
         
         return false
     }
