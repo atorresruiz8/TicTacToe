@@ -40,12 +40,12 @@ final class GameViewModel: ObservableObject {
             let compPos = determineComputerMovePosition(in: moves)
             moves[compPos] = Move(player: .computer, boardIndex: compPos)
             isGameboardDisabled = false
-            
+                
             if checkWinCondition(for: .computer, in: moves) {
                 alertItem = AlertContext.compWin
                 return
             }
-            
+                
             if checkForDraw(in: moves) {
                 alertItem = AlertContext.draw
                 return
@@ -56,8 +56,6 @@ final class GameViewModel: ObservableObject {
     func isSquareOccupied(in moves: [Move?], forIndex index: Int) -> Bool {
         return moves.contains(where: {$0?.boardIndex == index})
     }
-    
-    // MARK: TODO: Let two human players play the game.
     
     // Easy mode: AI just chooses random squares until it wins
     // Normal: AI goes for winning moves and choosing random squares

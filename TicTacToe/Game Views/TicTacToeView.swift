@@ -20,6 +20,14 @@ struct TicTacToeView: View {
                 
                 Spacer()
                 
+                // Display difficulty
+                Text(viewModel.difficulty + " Mode")
+                    .font(.largeTitle)
+                    .padding()
+                    .foregroundColor(.black)
+                Spacer()
+                
+                
                 // Player and Computer Scores
                 HStack {
                     Spacer()
@@ -70,6 +78,8 @@ struct TicTacToeView: View {
                     Button(action: {
                         viewModel.alertItem = AlertContext.easyMode
                         viewModel.difficulty = "Easy"
+                        viewModel.playerScore = 0
+                        viewModel.computerScore = 0
                     }, label: {
                         Text("Easy")
                             .foregroundColor(.black)
@@ -82,6 +92,8 @@ struct TicTacToeView: View {
                     Button(action: {
                         viewModel.alertItem = AlertContext.normalMode
                         viewModel.difficulty = "Normal"
+                        viewModel.playerScore = 0
+                        viewModel.computerScore = 0
                     }, label: {
                         Text("Normal")
                             .foregroundColor(.black)
@@ -94,6 +106,8 @@ struct TicTacToeView: View {
                     Button(action: {
                         viewModel.alertItem = AlertContext.hardMode
                         viewModel.difficulty = "Hard"
+                        viewModel.playerScore = 0
+                        viewModel.computerScore = 0
                     }, label: {
                         Text("Hard")
                             .foregroundColor(.black)
@@ -102,6 +116,7 @@ struct TicTacToeView: View {
                     .border(Color.black, width: 1)
                     Spacer()
                 }
+                Spacer()
                 Spacer()
             }
             .disabled(viewModel.isGameboardDisabled)

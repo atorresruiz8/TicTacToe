@@ -10,8 +10,6 @@
 
 import SwiftUI
 
-// MARK: TODO: add an app icon
-
 struct GameView: View {
     var body: some View {
         GeometryReader { geometry in
