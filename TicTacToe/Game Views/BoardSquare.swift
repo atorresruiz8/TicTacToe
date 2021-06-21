@@ -5,8 +5,10 @@
 //  Created by Antonio Torres-Ruiz on 6/18/21.
 //
 
+// This view creates each board used in the LazyVGrid used to create the TicTacToe grid.
+
 import SwiftUI
-struct GameBoardView: View {
+struct BoardSquare: View {
     var proxy : GeometryProxy
     var body: some View {
         Rectangle()

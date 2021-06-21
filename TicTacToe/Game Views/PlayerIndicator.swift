@@ -5,6 +5,8 @@
 //  Created by Antonio Torres-Ruiz on 6/18/21.
 //
 
+// This class tells GridView which image to place down on a square when it is selected in the grid.
+
 import SwiftUI
 
 struct PlayerIndicator: View {

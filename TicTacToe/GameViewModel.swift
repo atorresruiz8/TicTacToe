@@ -5,6 +5,8 @@
 //  Created by Antonio Torres-Ruiz on 6/17/21.
 //
 
+// The view model for this game, handling all of the business logic and default states of the game.
+
 import SwiftUI
 
 final class GameViewModel: ObservableObject {
